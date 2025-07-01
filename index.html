@@ -360,7 +360,7 @@
   <!-- Love Letter Popup -->
   <div id="lovePopup" class="popup">
     <h2>Dear Aisyah 💌</h2>
-    <p>You are the sunshine to my cloudy days, the calm to my chaos. I can’t wait to walk beside you, laugh with you, and make memories this week. Let's go dating and fall in love all over again 💕🌄</p>
+    <p> Let's go dating and fall in love all over again 💕🌄</p>
     <button class="close-btn" onclick="closePopup()">Close</button>
   </div>
   <div id="miniGame" style="display: none;">
@@ -394,10 +394,10 @@
 <div id="mainCard" style="display:none;">
   <!-- Card -->
   <div class="card">
-    <h1>Aisyah Baby 🥺💕</h1>
+    <h1>Aisyah Sayang 💕</h1>
     <p class="emoji">🌸🥾✨</p>
-    <p>I have a question from the bottom of my heart 💘</p>
-    <p>Do you want to go dating with your Mufid this week?</p>
+    <p>I have a question for you 💘</p>
+    <p>Do you want to go dating with me this week?</p>
     <p class="emoji">🥺👉👈</p>
     <button class="btn" onclick="chooseYes()">Yes 🥰</button>
     <button class="btn" id="noBtn" onclick="chooseNo()">No 😢</button>
@@ -474,7 +474,7 @@
 
   function chooseYes() {
     noShouldRun = false;
-  document.getElementById('response').innerHTML = "Yayyy! 🥳 I can't wait to go dating with you, love! 🌄💕 Get ready for kawaii pic, snacks, and beautiful views! 😚💞";
+  document.getElementById('response').innerHTML = "Yayyy! 🥳 I can't wait to go dating with you, love! 🌄💕 Get ready for kiyowo pic, memories, and beautiful views! 😚💞";
 
   // Confetti
   confetti({
@@ -527,14 +527,14 @@ function chooseNo() {
   const response = document.getElementById('response');
 
   if (noCount === 1) {
-    response.innerHTML = "Eh?? 😟 Are you sure? You promise to bring my favorite snacks 🍫 and we can take cute pics 📸✨";
+    response.innerHTML = "Eh?? 😟 Are you sure? You promise to out together 📸✨";
   } else if (noCount === 2) {
     response.innerHTML = "Pleaaaseee baby 🥺💖 kan kita da janji 😳💓";
   } else if (noCount === 3) {
-    response.innerHTML = "we can spend our time together 🫶 We can take breaks, eat snacks 🍓 and enjoy the sunrise together 🌅";
+    response.innerHTML = "we can spend our time together 🫶 We can take breaks, eat snacks 🍓 and karaoke together 🌅";
     noShouldRun = true; // START RUNNING on next hover!
   } else {
-    response.innerHTML = "Okay okay... you win 😭 But I'm going with puppy eyes until you say YES 🐶👉👈<br><br>So how about now? 🥹";
+    response.innerHTML = "Okay okay... you win 😭 But I'm going with emo face until you say YES 🐶👉👈<br><br>So how about now? 🥹";
   }
 }
 
