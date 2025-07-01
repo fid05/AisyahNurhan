@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aisyah, Wanna Go Dating?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #ffd6e8, #ffe9f3);
+      color: #5c2a4a;
+      text-align: center;
+      padding: 40px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      color: #d63384;
+      animation: popIn 1.5s ease;
+    }
+
+    .card {
+      background-color: #fff0f6;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 520px;
+      margin: auto;
+      padding: 35px 25px;
+      animation: fadeIn 2s ease;
+      position: relative;
+      z-index: 10;
+    }
+
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffe0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      flex-direction: column;
+    }
+
+    .loading-content {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #d63384;
+      font-weight: bold;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .emoji {
+      font-size: 2rem;
+      animation: bounce 2s infinite;
+    }
+
+    .btn {
+      background-color: #ff69b4;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s ease;
+      position: relative;
+    }
+
+    .btn:hover {
+      background-color: #e0569f;
+    }
+
+    #response {
+      margin-top: 30px;
+      font-size: 1.3rem;
+      color: #b3005c;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% {transform: translateY(0);}
+      50% {transform: translateY(-8px);}
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 6s infinite;
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-800px) rotate(45deg); opacity: 0; }
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff0f6;
+      border: 2px solid #d63384;
+      border-radius: 20px;
+      padding: 30px;
+      width: 300px;
+      z-index: 999;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .popup h2 {
+      color: #d63384;
+      margin-bottom: 15px;
+    }
+
+    .popup p {
+      font-size: 1rem;
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .music-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(to right, #ffb6c1, #ffc0cb);
+      border: 2px solid #ff69b4;
+      border-radius: 25px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #b3005c;
+      box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+      transition: all 0.4s ease;
+      z-index: 1000;
+      animation: popIn 1.5s ease;
+    }
+
+    .music-toggle:hover {
+      background: #ffe0ec;
+      animation: bounce-hover 0.6s ease, sparkle 1s infinite ease;
+      box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
+      transform: scale(1.05);
+    }
+
+    @keyframes bounce-hover {
+      0% { transform: scale(1.1) translateY(0); }
+      50% { transform: scale(1.15) translateY(-3px); }
+      100% { transform: scale(1.1) translateY(-2px); }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+
+    .cursor {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff80ab;
+      position: absolute;
+      pointer-events: none;
+      animation: sparkle 1s infinite ease-in-out;
+    }
+    @keyframes heartFirework {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.heart-firework {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background: red;
+  transform: rotate(45deg);
+  animation: heartFirework 1s ease-out forwards;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.heart-firework::before,
+.heart-firework::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: red;
+  border-radius: 50%;
+}
+
+.heart-firework::before {
+  top: -15px;
+  left: 0;
+}
+
+.heart-firework::after {
+  top: 0;
+  left: -15px;
+}
+.balloon {
+  position: fixed;
+  width: 30px;
+  height: 40px;
+  background: pink;
+  border-radius: 50% 50% 45% 45%;
+  animation: floatBalloon 6s linear infinite;
+  z-index: 999;
+  opacity: 0.8;
+}
+
+@keyframes floatBalloon {
+  0% { transform: translateY(100vh); opacity: 0.8; }
+  100% { transform: translateY(-120vh); opacity: 0; }
+}
+    .polaroid-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 220px;
+  background: #fff;
+  padding: 10px;
+  border: 5px solid white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transform: scale(0);
+  opacity: 0;
+  z-index: 1500;
+  transition: all 0.6s ease-in-out;
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+}
+
+.polaroid-popup img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.polaroid-popup.show {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.polaroid-popup p {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #b3005c;
+}
+    .polaroid-popup::before {
+  content: "💘";
+  font-size: 1.5rem;
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #fff0f6;
+  border: 2px dashed #d63384;
+  padding: 5px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+    .polaroid-popup {
+  position: fixed;
+  cursor: grab;
+}
+    #introSection {
+  animation: fadeIn 2s ease;
+  margin-bottom: 30px;
+}
+
+.intro-text {
+  font-size: 1.8rem;
+  color: #d63384;
+  animation: popIn 1.5s ease;
+}
+
+.intro-subtext {
+  font-size: 1.1rem;
+  color: #b3005c;
+  margin-bottom: 20px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+
+
+
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+  <div class="loading-content">
+    
+    <p>Loading love for Aisyah... 💖</p>
+    <p>Preparing snack, suprise and dating joy 🥺🌄💘</p>
+    
+  </div>
+</div>
+
+
+
+  <!-- Music -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="song.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div class="music-toggle" onclick="toggleMusic()">🎵 Play / Pause Music 💞</div>
+
+  <!-- Love Letter Popup -->
+  <div id="lovePopup" class="popup">
+    <h2>Dear Iyad 💌</h2>
+    <p>You are the sunshine to my cloudy days, the calm to my chaos. I can’t wait to walk beside you, laugh with you, and make memories this week. Let's go dating and fall in love all over again 💕🌄</p>
+    <button class="close-btn" onclick="closePopup()">Close</button>
+  </div>
+  <div id="miniGame" style="display: none;">
+  <h2 class="intro-text">Catch 3 hearts to unlock your surprise! 💖</h2>
+  <canvas id="gameCanvas" style="background: #fff0f6; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 20px auto; display: block; width: 90%; max-width: 300px; height: 400px;"></canvas>
+
+  <p id="gameStatus" style="color: #b3005c; font-weight: bold;">Caught: 0 / 3 💗</p>
+    <div style="margin-top: 15px;">
+  <button class="btn" onclick="moveLeft()">⬅️ Move Left</button>
+  <button class="btn" onclick="moveRight()">Move Right ➡️</button>
+</div>
+
+</div>
+
+<div id="introSection">
+  <h2 class="intro-text">Hii Iyad 🐻💕</h2>
+  <p class="intro-subtext">Mufid has a special surprise just for you... 🌸</p>
+  <button class="btn" onclick="startSurprise()">Click to Continue 💝</button>
+</div>
+  <div id="rewardScreen" style="display: none;">
+  <div class="card" style="background-color: #ffe6f0; border: 3px dashed #ff69b4;">
+    <h2 style="color: #d63384;">🏅 Reward Unlocked!</h2>
+    <p style="font-size: 1.2rem;">Aisyah, you are officially a:</p>
+    <h1 style="font-size: 1.8rem; color: #ff1493;">💖 Certified Princess 💖</h1>
+    <p>Only true love can catch all 3 hearts like you did 🥹✨</p>
+    <img src="love.jpg" alt="Badge" style="width: 100px; margin: 15px auto; display: block;" />
+    <button class="btn" onclick="showMainCard()">Claim Your Surprise 🎁</button>
+  </div>
+</div>
+
+<div id="mainCard" style="display:none;">
+  <!-- Card -->
+  <div class="card">
+    <h1>Aisyah Baby 🥺💕</h1>
+    <p class="emoji">🌸🥾✨</p>
+    <p>I have a question from the bottom of my heart 💘</p>
+    <p>Do you want to go dating with your Mufid this week?</p>
+    <p class="emoji">🥺👉👈</p>
+    <button class="btn" onclick="chooseYes()">Yes 🥰</button>
+    <button class="btn" id="noBtn" onclick="chooseNo()">No 😢</button>
+    <button class="btn" onclick="showPopup()">Read a Love Letter 💌</button>
+    <div id="response"></div>
+  </div>
+  <div id="polaroid" class="polaroid-popup">
+  <img src="us.jpg" alt="Us 💞">
+  <p>Forever yours, Mufid 🥺💖</p>
+</div>
+</div>
+
+
+  <script>
+
+
+     function startSurprise() {
+  document.getElementById("introSection").style.display = "none";
+  document.getElementById("miniGame").style.display = "block";
+  startGame();
+}
+
+
+    for (let i = 0; i < 30; i++) {
+      let heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 4 + Math.random() * 3 + "s";
+      document.body.appendChild(heart);
+    }
+    function showMainCard() {
+  document.getElementById("rewardScreen").style.display = "none";
+  document.getElementById("mainCard").style.display = "block";
+}
+
+  window.onload = function () {
+  setTimeout(() => {
+    const loader = document.getElementById("loading-screen");
+    loader.style.display = "none";
+  }, 2500);
+};
+
+
+
+    document.addEventListener("mousemove", function(e) {
+      const sparkle = document.createElement("div");
+      sparkle.classList.add("cursor");
+      sparkle.style.left = e.pageX + "px";
+      sparkle.style.top = e.pageY + "px";
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 500);
+    });
+
+    document.addEventListener("click", function () {
+      const music = document.getElementById("bgMusic");
+      music.play();
+    }, { once: true });
+
+    let noBtn = document.getElementById("noBtn");
+    let noCount = 0;
+    let noShouldRun = false;
+
+  noBtn.addEventListener("mouseover", () => {
+  if (noShouldRun) {
+    const i = Math.floor(Math.random() * 80);
+    const j = Math.floor(Math.random() * 80);
+    noBtn.style.position = "absolute";
+    noBtn.style.left = i + "vw";
+    noBtn.style.top = j + "vh";
+  }
+});
+
+
+
+  function chooseYes() {
+    noShouldRun = false;
+  document.getElementById('response').innerHTML = "Yayyy! 🥳 I can't wait to go dating with you, love! 🌄💕 Get ready for kawaii pic, snacks, and beautiful views! 😚💞";
+
+  // Confetti
+  confetti({
+    particleCount: 150,
+    spread: 80,
+    origin: { y: 0.6 },
+    colors: ['#ff69b4', '#ffd1dc', '#ffc0cb', '#ff85a2']
+  });
+
+  // Second Confetti Burst
+  setTimeout(() => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.4 },
+      colors: ['#ffaad4', '#ffe0f0', '#ff90b3']
+    });
+  }, 500);
+
+  // Heart fireworks
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart-firework";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.top = Math.random() * window.innerHeight + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1000);
+    }, i * 150);
+  }
+
+  // Floating balloons
+  for (let i = 0; i < 8; i++) {
+    const balloon = document.createElement("div");
+    balloon.className = "balloon";
+    balloon.style.left = Math.random() * 90 + "vw";
+    balloon.style.background = `hsl(${Math.random() * 360}, 100%, 80%)`;
+    balloon.style.animationDuration = `${5 + Math.random() * 3}s`;
+    document.body.appendChild(balloon);
+    setTimeout(() => balloon.remove(), 8000);
+  }
+    setTimeout(() => {
+    document.getElementById("polaroid").classList.add("show");
+  }, 2000);
+}
+
+
+function chooseNo() {
+  noCount++;
+  const response = document.getElementById('response');
+
+  if (noCount === 1) {
+    response.innerHTML = "Eh?? 😟 Are you sure? You promise to bring my favorite snacks 🍫 and we can take cute pics 📸✨";
+  } else if (noCount === 2) {
+    response.innerHTML = "Pleaaaseee baby 🥺💖 kan kita da janji 😳💓";
+  } else if (noCount === 3) {
+    response.innerHTML = "we can spend our time together 🫶 We can take breaks, eat snacks 🍓 and enjoy the sunrise together 🌅";
+    noShouldRun = true; // START RUNNING on next hover!
+  } else {
+    response.innerHTML = "Okay okay... you win 😭 But I'm going with puppy eyes until you say YES 🐶👉👈<br><br>So how about now? 🥹";
+  }
+}
+
+
+
+    function showPopup() {
+      document.getElementById("lovePopup").style.display = "block";
+    }
+
+    function closePopup() {
+      document.getElementById("lovePopup").style.display = "none";
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+    const polaroid = document.getElementById("polaroid");
+  polaroid.onmousedown = function (e) {
+    let shiftX = e.clientX - polaroid.getBoundingClientRect().left;
+    let shiftY = e.clientY - polaroid.getBoundingClientRect().top;
+
+    function moveAt(pageX, pageY) {
+      polaroid.style.left = pageX - shiftX + 'px';
+      polaroid.style.top = pageY - shiftY + 'px';
+    }
+
+    moveAt(e.pageX, e.pageY);
+
+    function onMouseMove(e) {
+      moveAt(e.pageX, e.pageY);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+
+    polaroid.onmouseup = function () {
+      document.removeEventListener('mousemove', onMouseMove);
+      polaroid.onmouseup = null;
+    };
+  };
+
+  polaroid.ondragstart = () => false;
+    
+  let canvas, ctx;
+  let player = { x: 130, y: 360, width: 40, height: 20 };
+  let hearts = [];
+  let caught = 0;
+
+  function startGame() {
+    canvas = document.getElementById("gameCanvas");
+    ctx = canvas.getContext("2d");
+
+    // Resize to match visual size
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 400;
+
+    setInterval(() => spawnHeart(), 1500);
+    setInterval(() => updateGame(), 30);
+  }
+
+
+  function drawPlayer() {
+    ctx.fillStyle = "#ff69b4";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+  }
+
+  function drawHeart(heart) {
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.moveTo(heart.x, heart.y);
+    ctx.arc(heart.x - 5, heart.y, 5, 0, Math.PI * 2);
+    ctx.arc(heart.x + 5, heart.y, 5, 0, Math.PI * 2);
+    ctx.lineTo(heart.x, heart.y + 15);
+    ctx.fill();
+  }
+
+  function spawnHeart() {
+    hearts.push({ x: Math.random() * 280 + 10, y: 0 });
+  }
+
+  function updateGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+
+    hearts.forEach((heart, index) => {
+      heart.y += 2;
+      drawHeart(heart);
+
+      // collision check
+      if (
+        heart.y + 10 >= player.y &&
+        heart.x >= player.x &&
+        heart.x <= player.x + player.width
+      ) {
+        hearts.splice(index, 1);
+        caught++;
+        document.getElementById("gameStatus").textContent = `Caught: ${caught} / 3 💗`;
+
+        if (caught === 3) {
+  document.getElementById("miniGame").style.display = "none";
+  document.getElementById("rewardScreen").style.display = "block";
+}
+
+      }
+
+      // remove if out of screen
+      if (heart.y > 400) {
+        hearts.splice(index, 1);
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" && player.x > 0) player.x -= 20;
+    if (e.key === "ArrowRight" && player.x < 260) player.x += 20;
+  });
+
+ 
+
+    function moveLeft() {
+  if (player.x > 0) player.x -= 20;
+}
+
+function moveRight() {
+  if (player.x < canvas.width - player.width) player.x += 20;
+}
+
+
+  </script>
+
+</body>
+</html>
